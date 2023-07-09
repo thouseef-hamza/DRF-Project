@@ -15,7 +15,7 @@ class UserRegister(serializers.ModelSerializer):
     
     def validate_email(self,value):
         if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("Email Has Been ALready Used")
+            raise serializers.ValidationError("Email Has Been Already Used")
         return value
         
     def save(self):
@@ -34,3 +34,7 @@ class UserRegister(serializers.ModelSerializer):
         user.save()
         return user
         
+class UserDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','email','username']
