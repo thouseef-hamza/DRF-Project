@@ -4,7 +4,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 # Create your models here.
 class UserManager(BaseUserManager):
-    def create_user(self, email, username,tc, password=None,password2=None):
+    def create_user(self, email, username,tc, password=None,password2=None,profile_picture=None,):
         if not email:
             raise ValueError("Users must have an email address")
 
@@ -27,6 +27,10 @@ class UserManager(BaseUserManager):
         user.is_admin = True
         user.save(using=self._db)
         return user
+    
+def upload_to(instance, filename):
+    return 'images/{filename}'.format(filename=filename)
+
 class User(AbstractBaseUser):
     email = models.EmailField(
         verbose_name="Email",
@@ -39,11 +43,12 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at= models.DateTimeField(auto_now=True)
+    profile_picture = models.ImageField(upload_to=upload_to,default='media/1658384701097-01.jpeg',blank=True,null=True)
 
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username","tc"]
+    REQUIRED_FIELDS = ["username","tc",'profile_picture']
 
     def __str__(self):
         return self.email

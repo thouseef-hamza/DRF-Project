@@ -12,6 +12,7 @@ from .renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 from rest_framework import generics
+from rest_framework.parsers import MultiPartParser
 # Create your views here.
 
 #  Generate Token Manually
@@ -26,8 +27,8 @@ def get_tokens_for_user(user):
     
     
 class UserRegistrationView(APIView): 
-    # permission_classes=[IsAdminUser]
     renderer_classes = [UserRenderer]
+    parser_classes=[MultiPartParser]
     
     def get(self,request,format=None):
         user=User.objects.all()
@@ -82,7 +83,7 @@ class UserDetail(APIView):
         except:
             raise Http404
     
-    def get(self,request,pk=None,format=None):
+    def get(self,request,pk,format=None):
         user_data = self.get_object(pk)
         serializer=UserProfileSerializer(user_data)
         return Response(serializer.data)
